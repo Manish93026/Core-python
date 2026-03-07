@@ -1,78 +1,65 @@
 import pymysql
 
-connection = pymysql.connect(host='localhost',port=3306,user='root',passwd='root',db='advpython')
-cursor= connection.cursor()
-def insert1():
 
-    sql = "insert into employee values(21,'payal','vipro','indore',54100)"
-    cursor.execute(sql)
-    connection.commit()
-    connection.close()
-    print("inserted into employee table successfully")
+class Insert:
+    # Connection aur Cursor ko class level par rakhne ke bajaye function mein rakhna safe hota hai
+    # Lekin aapke logic ke hisaab se ise aise likh sakte hain:
 
-def insert2():
+    def get_connection(self):
+        return pymysql.connect(host='localhost', port=3306, user='root', password='root', db='advpython')
 
-    sql = "insert into employee values(%s,%s,%s,%s,%s)"
-    values = (22,'raj','tcs','bangloru',63990)
-    cursor.execute(sql,values)
-    connection.commit()
-    connection.close()
-    print("inserted into employee table successfully")
+    def insert1(self):
+        connection = self.get_connection()
+        cursor = connection.cursor()
+        sql = "insert into employee values(21, 'payal', 'vipro', 'indore', 54100)"
+        cursor.execute(sql)
+        connection.commit()
+        connection.close()
+        print("Inserted into employee table successfully (Static)")
 
-def insert3(id,name,compnay,address,salary):
+    def insert2(self):
+        connection = self.get_connection()
+        cursor = connection.cursor()
+        sql = "insert into employee values(%s, %s, %s, %s, %s)"
+        values = (22, 'raj', 'tcs', 'bangloru', 63990)
+        cursor.execute(sql, values)
+        connection.commit()
+        connection.close()
+        print("Inserted into employee table successfully (Parameterized)")
 
-    sql = "insert into employee values(%s,%s,%s,%s,%s)"
-    values = (id,name,compnay,address,salary)
-    cursor.execute(sql,values)
-    connection.commit()
-    connection.close()
-    print("inserted into employee table successfully")
+    def insert3(self, id, name, company, address, salary):
+        connection = self.get_connection()
+        cursor = connection.cursor()
+        sql = "insert into employee values(%s, %s, %s, %s, %s)"
+        values = (id, name, company, address, salary)
+        cursor.execute(sql, values)
+        connection.commit()
+        connection.close()
+        print(f"Employee {name} inserted successfully (Arguments)")
 
-# def insert4(param={}):
-#     print("give the details you insert")
-#     print("id ,name ,compnay,address ,salary")
-#     id = param["id"]
-#     name = param["name"]
-#     compnay = param["compnay"]
-#     address = param["address"]
-#     salary = param["salary"]
-#
-#     sql = "insert into employee values(%s,%s,%s,%s,%s)"
-#     values = (id,name,compnay,address,salary)
-#     cursor.execute(sql,values)
-#     connection.commit()
-#     connection.close()
-#     print("inserted into employee table successfully")
+    def insert4(self):
+        print("\n--- Enter Employee Details ---")
+        id = int(input("Enter ID: "))
+        name = input("Enter Name: ")
+        company = input("Enter Company: ")
+        address = input("Enter Address: ")
+        salary = float(input("Enter Salary: "))
 
+        connection = self.get_connection()
+        cursor = connection.cursor()
+        sql = "insert into employee values(%s, %s, %s, %s, %s)"
+        values = (id, name, company, address, salary)
 
-
-def insert4():
-    print("--- Enter Employee Details ---")
-
-    id = int(input("Enter ID: "))
-    name = input("Enter Name: ")
-    company = input("Enter Company: ")
-    address = input("Enter Address: ")
-    salary = float(input("Enter Salary: "))
-
-    # Query aur execution
-    sql = "insert into employee values(%s, %s, %s, %s, %s)"
-    values = (id, name, company, address, salary)
-
-    cursor.execute(sql, values)
-    connection.commit()
-    connection.close()
-    print(f"Employee {name} inserted successfully!")
+        cursor.execute(sql, values)
+        connection.commit()
+        connection.close()
+        print(f"Employee {name} inserted successfully (User Input)!")
 
 
-# Program run karne ke liye
+# --- Program Execution ---
 if __name__ == "__main__":
-    insert4()
+    # 1. Class ka object banayein
+    obj = EmployeeInsert()
 
-
-#insert1()
-#insert2()
-#insert3(23,'udai','rays','indore',54100)
-# insert4({'id':24,'name':'khushi','compnay':'google','address':'indore','salary':85400})
-#
-# a = str(input(insert4()))
+    # 2. Function call karein
+    obj.insert4()
